@@ -155,8 +155,9 @@ def hybrid_recommend(user_id, movie_title, top_n=10):
 # Groq
 # -------------------------------
 
+
 client = Groq(
-    api_key="GROQ_API_KEY"
+    api_key=st.secrets["GROQ_API_KEY"]
 )
 
 
