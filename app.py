@@ -402,7 +402,7 @@ with tab2:
              use_container_width=True)
 
           st.image(
-            "images/movie_released_peryear.png",
+            "images/movie_relased_peryear.png",
              caption="Movies Released Per Year",
              use_container_width=True)
 
