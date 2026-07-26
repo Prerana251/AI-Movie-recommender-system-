@@ -413,12 +413,6 @@ with tab2:
     with col2:
 
         st.image(
-            "images/popularity_distribution.png",
-            caption="Popularity Distribution",
-            use_container_width=True
-        )
-
-        st.image(
             "images/top_directors.png",
             caption="Top Directors",
             use_container_width=True
