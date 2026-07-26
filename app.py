@@ -17,15 +17,42 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# ADD CSS HERE
 st.markdown("""
 <style>
 
-.main{
-    background-color:#fafafa;
+/* Main app background */
+.stApp {
+    background-color: #121212;
+    color: white;
 }
 
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #1E1E1E;
+}
+
+/* Main headings */
+h1,h2,h3{
+    color:#E50914;
+}
+
+/* Text */
+p,label{
+    color:white;
+}
+
+/* Inputs */
+.stTextInput input,
+.stNumberInput input{
+    background:#2E2E2E;
+    color:white;
+}
+
+/* Buttons */
 .stButton>button{
-    background-color:#E50914;
+    background:#E50914;
     color:white;
     border-radius:10px;
     height:3em;
@@ -34,19 +61,15 @@ st.markdown("""
 }
 
 .stButton>button:hover{
-    background-color:#b20710;
-    color:white;
+    background:#B20710;
 }
 
+/* Metrics */
 div[data-testid="metric-container"]{
-    background:#f8f9fa;
-    padding:15px;
+    background:#1E1E1E;
     border-radius:10px;
-    border:1px solid #ddd;
-}
-
-h1{
-    color:#E50914;
+    padding:15px;
+    border:1px solid #333;
 }
 
 </style>
@@ -230,7 +253,10 @@ Explain in plain English in 3 sentences.
 # UI
 # -------------------------------
 
+# -------------------------------
 # Sidebar
+# -------------------------------
+
 with st.sidebar:
 
     st.header("⚙ Recommendation Settings")
@@ -254,106 +280,100 @@ with st.sidebar:
     )
 
     recommend = st.button("🎬 Recommend")
-    # -------------------------------
+
+
+# -------------------------------
 # Tabs
 # -------------------------------
 
-tab1, tab2 = st.tabs(
+tab1, tab2, tab3 = st.tabs(
     [
         "🎬 Recommendations",
-        "📊 EDA Dashboard"
+        "📊 EDA Dashboard",
+        "ℹ️ About Project"
     ]
 )
-
 
 # Main Page
 with tab1:
 
     if recommend:
 
-    if movie.strip() == "":
-        st.warning("Please enter a movie title.")
-        st.stop()
+        if movie.strip() == "":
+            st.warning("Please enter a movie title.")
+            st.stop()
 
-    with st.spinner("🔍 Finding the best movies for you..."):
+        with st.spinner("🔍 Finding the best movies for you..."):
 
-        result = hybrid_recommend(user, movie, top)
+            result = hybrid_recommend(user, movie, top)
 
-    if "Message" in result.columns:
+        if "Message" in result.columns:
 
-        st.error("Movie not found.")
+            st.error("Movie not found.")
 
-    else:
+        else:
 
-        st.success("Recommendations generated successfully!")
+            st.success("Recommendations generated successfully!")
 
-        # -------------------------
-        # Metrics
-        # -------------------------
+            col1, col2, col3 = st.columns(3)
 
-        col1, col2, col3 = st.columns(3)
+            col1.metric(
+                "Movies Found",
+                len(result)
+            )
 
-        col1.metric(
-            "Movies Found",
-            len(result)
-        )
+            col2.metric(
+                "Average Score",
+                round(result["Hybrid Score"].mean(), 2)
+            )
 
-        col2.metric(
-            "Average Score",
-            round(result["Hybrid Score"].mean(), 2)
-        )
+            col3.metric(
+                "Best Match",
+                result.iloc[0]["title"]
+            )
 
-        col3.metric(
-            "Best Match",
-            result.iloc[0]["title"]
-        )
+            st.markdown("---")
 
-        st.markdown("---")
+            st.header("🎬 Recommended Movies")
 
-        st.header("🎬 Recommended Movies")
+            for _, row in result.iterrows():
 
-        # -------------------------
-        # Movie Cards
-        # -------------------------
+                with st.container():
 
-        for _, row in result.iterrows():
+                    st.subheader(f"🎥 {row['title']}")
 
-            with st.container():
+                    st.progress(float(row["Hybrid Score"]))
 
-                st.subheader(f"🎥 {row['title']}")
+                    c1, c2, c3 = st.columns(3)
 
-                st.progress(float(row["Hybrid Score"]))
-
-                c1, c2, c3 = st.columns(3)
-
-                c1.metric(
-                    "Content",
-                    f"{row['Content Score']:.2f}"
-                )
-
-                c2.metric(
-                    "Collaborative",
-                    f"{row['Collaborative Score']:.2f}"
-                )
-
-                c3.metric(
-                    "Hybrid",
-                    f"{row['Hybrid Score']:.2f}"
-                )
-
-                with st.expander("🤖 Why did AI recommend this movie?"):
-
-                    explanation = explain(
-                        movie,
-                        row["title"],
-                        row["Content Score"],
-                        row["Collaborative Score"],
-                        row["Hybrid Score"]
+                    c1.metric(
+                        "Content",
+                        f"{row['Content Score']:.2f}"
                     )
 
-                    st.write(explanation)
+                    c2.metric(
+                        "Collaborative",
+                        f"{row['Collaborative Score']:.2f}"
+                    )
 
-                st.markdown("---")
+                    c3.metric(
+                        "Hybrid",
+                        f"{row['Hybrid Score']:.2f}"
+                    )
+
+                    with st.expander("🤖 Why did AI recommend this movie?"):
+
+                        explanation = explain(
+                            movie,
+                            row["title"],
+                            row["Content Score"],
+                            row["Collaborative Score"],
+                            row["Hybrid Score"]
+                        )
+
+                        st.write(explanation)
+
+                    st.markdown("---")
 # -------------------------------
 # EDA Dashboard
 # -------------------------------
@@ -361,8 +381,6 @@ with tab1:
 with tab2:
 
     st.title("📊 Exploratory Data Analysis")
-
-    st.markdown("### Dataset Insights")
 
     col1, col2 = st.columns(2)
 
@@ -411,7 +429,61 @@ with tab2:
             caption="Top Most Popular Movies",
             use_container_width=True
         )
+        with tab3:
 
+    st.title("ℹ️ About the Project")
+
+    st.markdown("""
+### 🎬 AI Movie Recommendation System
+
+This application recommends movies using a hybrid recommendation approach by combining:
+
+- 🎯 Content-Based Filtering (TF-IDF + Cosine Similarity)
+- 👥 Collaborative Filtering (SVD)
+- 🔀 Hybrid Recommendation (40% Content + 60% Collaborative)
+- 🤖 Explainable AI using Groq Llama 3.3
+
+---
+
+### 📂 Dataset
+
+- Movie Metadata
+- User Ratings
+- Movie Genres
+- Movie Overview
+- Popularity & Ratings
+
+---
+
+### ⚙️ Technologies Used
+
+- Python
+- Streamlit
+- Scikit-learn
+- Surprise (SVD)
+- Pandas
+- Groq API
+- Pickle
+
+---
+
+### 📈 Model Evaluation
+
+- RMSE
+- MAE
+- Precision@K
+- Recall@K
+
+---
+
+### 👩‍💻 Developed By
+
+**Prerana Gowda**
+
+Business Analytics Student
+
+AI & Machine Learning Enthusiast
+""")
 # Footer
 
 st.markdown("---")
