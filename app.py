@@ -386,29 +386,25 @@ with tab2:
 
     with col1:
 
-        st.image(
+          st.image(
             "images/DistributionofMovieRatings.png",
-            caption="Distribution of Movie Ratings",
-            use_container_width=True
-        )
+             caption="Distribution of Movie Ratings",
+             use_container_width=True)
 
-        st.image(
+          st.image(
             "images/top_genres.png",
-            caption="Top Genres",
-            use_container_width=True
-        )
+             caption="Top Genres",
+             use_container_width=True)
 
-        st.image(
+          st.image(
             "images/top_actor.png",
-            caption="Top Actors",
-            use_container_width=True
-        )
+             caption="Top Actors",
+             use_container_width=True)
 
-        st.image(
+          st.image(
             "images/movie_released_peryear.png",
-            caption="Movies Released Per Year",
-            use_container_width=True
-        )
+             caption="Movies Released Per Year",
+             use_container_width=True)
 
     with col2:
 
