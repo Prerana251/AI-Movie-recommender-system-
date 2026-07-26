@@ -430,11 +430,9 @@ with tab2:
             use_container_width=True
         )
         with tab3:
-
-    st.title("ℹ️ About the Project")
-
-    st.markdown("""
-### 🎬 AI Movie Recommendation System
+            st.title("ℹ️ About the Project")
+            st.markdown("""
+            ### 🎬 AI Movie Recommendation System
 
 This application recommends movies using a hybrid recommendation approach by combining:
 
