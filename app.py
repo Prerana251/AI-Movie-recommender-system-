@@ -12,12 +12,55 @@ from groq import Groq
 # -------------------------------
 
 st.set_page_config(
-    page_title="AI Movie Recommendation System",
+    page_title="🎬 AI Movie Recommendation",
     page_icon="🎬",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
+st.markdown("""
+<style>
+
+.main{
+    background-color:#fafafa;
+}
+
+.stButton>button{
+    background-color:#E50914;
+    color:white;
+    border-radius:10px;
+    height:3em;
+    width:100%;
+    font-size:18px;
+}
+
+.stButton>button:hover{
+    background-color:#b20710;
+    color:white;
+}
+
+div[data-testid="metric-container"]{
+    background:#f8f9fa;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+h1{
+    color:#E50914;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 st.title("🎬 AI Movie Recommendation System")
+
+st.markdown("""
+Discover personalized movie recommendations using
+
+- 🎯 Content-Based Filtering
+- 👥 Collaborative Filtering
+- 🤖 Explainable AI (Groq)
+""")
 
 # -------------------------------
 # Load Models
@@ -187,24 +230,42 @@ Explain in plain English in 3 sentences.
 # UI
 # -------------------------------
 
-movie = st.text_input("Movie Title")
+# Sidebar
+with st.sidebar:
 
-user = st.number_input(
-    "User ID",
-    min_value=1,
-    step=1
-)
+    st.header("⚙ Recommendation Settings")
 
-top = st.slider(
-    "Recommendations",
-    5,
-    20,
-    10
-)
+    movie = st.text_input(
+        "🎬 Movie Title",
+        placeholder="Titanic"
+    )
 
-if st.button("Recommend"):
+    user = st.number_input(
+        "👤 User ID",
+        min_value=1,
+        value=1
+    )
 
-    result = hybrid_recommend(user, movie, top)
+    top = st.slider(
+        "🎯 Number of Recommendations",
+        5,
+        20,
+        10
+    )
+
+    recommend = st.button("🎬 Recommend")
+
+
+# Main Page
+if recommend:
+
+    if movie.strip() == "":
+        st.warning("Please enter a movie title.")
+        st.stop()
+
+    with st.spinner("🔍 Finding the best movies for you..."):
+
+        result = hybrid_recommend(user, movie, top)
 
     if "Message" in result.columns:
 
@@ -212,31 +273,95 @@ if st.button("Recommend"):
 
     else:
 
-        st.subheader("Recommended Movies")
+        st.success("Recommendations generated successfully!")
 
-        st.dataframe(
-            result[
-                [
-                    "title",
-                    "Content Score",
-                    "Collaborative Score",
-                    "Hybrid Score"
-                ]
-            ]
+        # -------------------------
+        # Metrics
+        # -------------------------
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric(
+            "Movies Found",
+            len(result)
         )
 
-        st.subheader("AI Explanations")
+        col2.metric(
+            "Average Score",
+            round(result["Hybrid Score"].mean(), 2)
+        )
+
+        col3.metric(
+            "Best Match",
+            result.iloc[0]["title"]
+        )
+
+        st.markdown("---")
+
+        st.header("🎬 Recommended Movies")
+
+        # -------------------------
+        # Movie Cards
+        # -------------------------
 
         for _, row in result.iterrows():
 
-            with st.expander(row["title"]):
+            with st.container():
 
-                st.write(
-                    explain(
+                st.subheader(f"🎥 {row['title']}")
+
+                st.progress(float(row["Hybrid Score"]))
+
+                c1, c2, c3 = st.columns(3)
+
+                c1.metric(
+                    "Content",
+                    f"{row['Content Score']:.2f}"
+                )
+
+                c2.metric(
+                    "Collaborative",
+                    f"{row['Collaborative Score']:.2f}"
+                )
+
+                c3.metric(
+                    "Hybrid",
+                    f"{row['Hybrid Score']:.2f}"
+                )
+
+                with st.expander("🤖 Why did AI recommend this movie?"):
+
+                    explanation = explain(
                         movie,
                         row["title"],
                         row["Content Score"],
                         row["Collaborative Score"],
                         row["Hybrid Score"]
                     )
-                )
+
+                    st.write(explanation)
+
+                st.markdown("---")
+
+
+# Footer
+
+st.markdown("---")
+
+st.markdown(
+"""
+### 👩‍💻 Developed by
+
+**Prerana Gowda**
+
+🎬 AI Movie Recommendation System
+
+✔ Content-Based Filtering
+
+✔ Collaborative Filtering (SVD)
+
+✔ Hybrid Recommendation
+
+✔ Explainable AI (Groq)
+"""
+)
