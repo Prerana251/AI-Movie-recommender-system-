@@ -378,43 +378,133 @@ with tab2:
 
     st.title("📊 Exploratory Data Analysis")
 
-    col1, col2 = st.columns(2)
+    with tab2:
 
-    with col1:
+    st.title("📊 Exploratory Data Analysis")
 
-          st.image(
-            "images/DistributionofMovieRatings.png",
-             caption="Distribution of Movie Ratings",
-             width="stretch")
+    # -------------------------------------------------
+    st.subheader("1️⃣ Distribution of Movie Ratings")
 
-          st.image(
-            "images/top_genres.png",
-             caption="Top Genres",
-             width="stretch")
+    st.image(
+        "images/DistributionofMovieRatings.png",
+        caption="Distribution of Movie Ratings",
+        width="stretch"
+    )
 
-          st.image(
-            "images/top_actor.png",
-             caption="Top Actors",
-             width="stretch")
+    st.info("""
+    **Inference**
 
-          st.image(
-            "images/movie_relased_peryear.png",
-             caption="Movies Released Per Year",
-             width="stretch")
+    • Most movies have ratings between **6 and 8**.
 
-    with col2:
+    • Very few movies receive extremely low ratings.
 
-        st.image(
-            "images/top_directors.png",
-            caption="Top Directors",
-            width="stretch"
-        )
+    • This indicates that the dataset mainly contains well-rated movies.
+    """)
 
-        st.image(
-            "images/top_most_popular_movie.png",
-            caption="Top Most Popular Movies",
-            width="stretch"
-        )
+    st.divider()
+
+    # -------------------------------------------------
+    st.subheader("2️⃣ Top Genres")
+
+    st.image(
+        "images/top_genres.png",
+        caption="Top Genres",
+        width="stretch"
+    )
+
+    st.info("""
+    **Inference**
+
+    • Drama and Comedy are the most common genres.
+
+    • Action and Adventure are also highly represented.
+
+    • Genre information improves content-based recommendations.
+    """)
+
+    st.divider()
+
+    # -------------------------------------------------
+    st.subheader("3️⃣ Top Actors")
+
+    st.image(
+        "images/top_actor.png",
+        caption="Top Actors",
+        width="stretch"
+    )
+
+    st.info("""
+    **Inference**
+
+    • A few actors appear in many movies.
+
+    • Popular actors contribute to movie similarity.
+
+    • Frequent actor appearances improve recommendation quality.
+    """)
+
+    st.divider()
+
+    # -------------------------------------------------
+    st.subheader("4️⃣ Movies Released Per Year")
+
+    st.image(
+        "images/movie_released_peryear.png",
+        caption="Movies Released Per Year",
+        width="stretch"
+    )
+
+    st.info("""
+    **Inference**
+
+    • Movie production has increased steadily over the years.
+
+    • Most movies in the dataset were released after 2000.
+
+    • The dataset contains a strong representation of recent films.
+    """)
+
+    st.divider()
+
+    # -------------------------------------------------
+    st.subheader("5️⃣ Top Directors")
+
+    st.image(
+        "images/top_directors.png",
+        caption="Top Directors",
+        width="stretch"
+    )
+
+    st.info("""
+    **Inference**
+
+    • A few directors have contributed a large number of movies.
+
+    • Director information helps identify similar movies.
+
+    • Well-known directors dominate the dataset.
+    """)
+
+    st.divider()
+
+    # -------------------------------------------------
+    st.subheader("6️⃣ Top Most Popular Movies")
+
+    st.image(
+        "images/top_most_popular_movie.png",
+        caption="Top Most Popular Movies",
+        width="stretch"
+    )
+
+    st.info("""
+    **Inference**
+
+    • A small number of movies have very high popularity.
+
+    • Popular movies are more likely to be recommended.
+
+    • Popularity is an important feature in ranking recommendations.
+    """)
         with tab3:
 
          st.title("🎬 About the Project")
