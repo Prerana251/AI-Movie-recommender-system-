@@ -229,17 +229,22 @@ client = Groq(
 
 def explain(movie, rec, c, cf, h):
 
-    prompt = f"""
-The user searched for {movie}.
+prompt = f"""
+The user selected the movie: {movie}
 
-Recommended movie:
-{rec}
+Recommended movie: {rec}
 
-Content Score: {c:.2f}
-Collaborative Score: {cf:.2f}
-Hybrid Score: {h:.2f}
+Explain why this recommendation is suitable.
 
-Explain in plain English in 3 sentences.
+Mention:
+
+- Similar genres
+- Similar storyline
+- Similar audience preferences
+
+Do NOT mention Content Score, Collaborative Score or Hybrid Score.
+
+Write in simple English using 3–4 sentences.
 """
 
     response = client.chat.completions.create(
@@ -260,11 +265,9 @@ Explain in plain English in 3 sentences.
 with st.sidebar:
 
     st.header("⚙ Recommendation Settings")
-
-    movie = st.text_input(
-        "🎬 Movie Title",
-        placeholder="Titanic"
-    )
+    
+    movie = st.selectbox("🎬 Select a Movie",
+        options=sorted(final_movies["title"].unique()))
 
     user = st.number_input(
         "👤 User ID",
@@ -341,25 +344,18 @@ with tab1:
                 with st.container():
 
                     st.subheader(f"🎥 {row['title']}")
+                    st.caption("Recommended especially for you")
 
                     st.progress(float(row["Hybrid Score"]))
 
-                    c1, c2, c3 = st.columns(3)
+                    st.success("### Why is this movie recommended?")
 
-                    c1.metric(
-                        "Content",
-                        f"{row['Content Score']:.2f}"
-                    )
+                    st.markdown("""
+                    ✅ **Matches your favourite genres and storyline**
 
-                    c2.metric(
-                        "Collaborative",
-                        f"{row['Collaborative Score']:.2f}"
-                    )
+                    👥 **Users with similar preferences also watched and liked this movie**
 
-                    c3.metric(
-                        "Hybrid",
-                        f"{row['Hybrid Score']:.2f}"
-                    )
+                    ⭐ **Highly ranked by the Hybrid Recommendation Model**""")
 
                     with st.expander("🤖 Why did AI recommend this movie?"):
 
@@ -389,49 +385,76 @@ with tab2:
           st.image(
             "images/DistributionofMovieRatings.png",
              caption="Distribution of Movie Ratings",
-             use_container_width=True)
+             width="stretch")
 
           st.image(
             "images/top_genres.png",
              caption="Top Genres",
-             use_container_width=True)
+             width="stretch")
 
           st.image(
             "images/top_actor.png",
              caption="Top Actors",
-             use_container_width=True)
+             width="stretch")
 
           st.image(
             "images/movie_relased_peryear.png",
              caption="Movies Released Per Year",
-             use_container_width=True)
+             width="stretch")
 
     with col2:
 
         st.image(
             "images/top_directors.png",
             caption="Top Directors",
-            use_container_width=True
+            width="stretch"
         )
 
         st.image(
             "images/top_most_popular_movie.png",
             caption="Top Most Popular Movies",
-            use_container_width=True
+            width="stretch"
         )
         with tab3:
-            st.title("ℹ️ About the Project")
-            st.markdown("""
-            ### 🎬 AI Movie Recommendation System
 
-This application recommends movies using a hybrid recommendation approach by combining:
+         st.title("🎬 About the Project")
 
-- 🎯 Content-Based Filtering (TF-IDF + Cosine Similarity)
-- 👥 Collaborative Filtering (SVD)
-- 🔀 Hybrid Recommendation (40% Content + 60% Collaborative)
-- 🤖 Explainable AI using Groq Llama 3.3
+         st.markdown("""
+## AI Movie Recommendation System
+
+This project recommends personalised movies using a Hybrid Recommendation System.
+
+### Models Used
+
+### 🎯 Content-Based Filtering
+
+Uses **TF-IDF Vectorization** and **Cosine Similarity** to compare movie genres, keywords, cast, and descriptions. It recommends movies with similar content.
 
 ---
+
+### 👥 Collaborative Filtering
+
+Uses **Singular Value Decomposition (SVD)** from the Surprise library.
+
+SVD is a **model-based collaborative filtering algorithm** that learns user preferences from historical ratings and predicts ratings for unseen movies.
+
+---
+
+### 🔀 Hybrid Recommendation
+
+The final recommendation combines:
+
+- 40% Content-Based Filtering
+- 60% Collaborative Filtering (SVD)
+
+This improves recommendation accuracy and personalization.
+
+---
+
+### 🤖 Explainable AI
+
+Groq Llama 3.3 generates natural language explanations describing why each movie is recommended.
+""")
 
 ### 📂 Dataset
 
@@ -457,13 +480,31 @@ This application recommends movies using a hybrid recommendation approach by com
 
 ### 📈 Model Evaluation
 
-- RMSE
-- MAE
-- Precision@K
-- Recall@K
+st.subheader("📈 Model Performance")
 
----
+metrics = pd.DataFrame({
 
+"Model":[
+"Content-Based",
+"Collaborative (SVD)",
+"Hybrid"
+],
+
+"Evaluation":[
+"Precision@10",
+"RMSE / MAE",
+"Precision@10 & Recall@10"
+],
+
+"Result":[
+"Your Precision",
+"Your RMSE / MAE",
+"Your Precision & Recall"
+]
+
+})
+
+st.table(metrics)
 ### 👩‍💻 Developed By
 
 **Prerana Gowda**
