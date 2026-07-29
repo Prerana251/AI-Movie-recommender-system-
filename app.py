@@ -613,7 +613,9 @@ st.markdown(
 
 **Prerana Gowda**
 
-🎬 AI Movie Recommendation System
+st.markdown("""
+# 🎬 AI Movie Recommendation System
+""")
 
 ✔ Content-Based Filtering
 
