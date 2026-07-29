@@ -345,24 +345,24 @@ with tab1:
 
             st.markdown("---")
 
-st.header("🎬 Recommended Movies")
+            st.header("🎬 Recommended Movies")
 
-for i, (_, row) in enumerate(result.iterrows(), start=1):
+            for i, (_, row) in enumerate(result.iterrows(), start=1):
 
-    st.subheader(f"{i}. {row['title']}")
+                st.subheader(f"{i}. {row['title']}")
 
-    explanation = explain(
-        movie,
-        row["title"],
-        row["Content Score"],
-        row["Collaborative Score"],
-        row["Hybrid Score"]
-    )
+                explanation = explain(
+                    movie,
+                    row["title"],
+                    row["Content Score"],
+                    row["Collaborative Score"],
+                    row["Hybrid Score"]
+                )
 
-    st.write("**Why recommended?**")
-    st.write(explanation)
+                st.write("**Why recommended?**")
+                st.write(explanation)
 
-    st.divider()      
+                st.divider()      
 
 # -------------------------------
 # EDA Dashboard
