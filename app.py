@@ -18,7 +18,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ADD CSS HERE
+# -------------------------------
+# CSS
+# -------------------------------
+
 st.markdown("""
 <style>
 
@@ -34,42 +37,42 @@ section[data-testid="stSidebar"] {
 }
 
 /* Main headings */
-h1,h2,h3{
-    color:#E50914;
+h1, h2, h3 {
+    color: #E50914;
 }
 
 /* Text */
-p,label{
-    color:white;
+p, label {
+    color: white;
 }
 
 /* Inputs */
 .stTextInput input,
-.stNumberInput input{
-    background:#2E2E2E;
-    color:white;
+.stNumberInput input {
+    background: #2E2E2E;
+    color: white;
 }
 
 /* Buttons */
-.stButton>button{
-    background:#E50914;
-    color:white;
-    border-radius:10px;
-    height:3em;
-    width:100%;
-    font-size:18px;
+.stButton > button {
+    background: #E50914;
+    color: white;
+    border-radius: 10px;
+    height: 3em;
+    width: 100%;
+    font-size: 18px;
 }
 
-.stButton>button:hover{
-    background:#B20710;
+.stButton > button:hover {
+    background: #B20710;
 }
 
 /* Metrics */
-div[data-testid="metric-container"]{
-    background:#1E1E1E;
-    border-radius:10px;
-    padding:15px;
-    border:1px solid #333;
+div[data-testid="metric-container"] {
+    background: #1E1E1E;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #333;
 }
 
 </style>
@@ -109,7 +112,7 @@ def load_models():
 
 tfidf, final_movies, ratings_df, svd_model = load_models()
 
-# Build cosine similarity (instead of loading the 627 MB file)
+# Build cosine similarity
 tfidf_matrix = tfidf.transform(final_movies["tags"])
 cosine_sim = cosine_similarity(tfidf_matrix)
 
@@ -134,7 +137,7 @@ def content_recommend(movie_title, top_n=100):
         similarity_scores,
         key=lambda x: x[1],
         reverse=True
-    )[1:top_n+1]
+    )[1:top_n + 1]
 
     movie_indices = [i[0] for i in similarity_scores]
 
@@ -206,8 +209,8 @@ def hybrid_recommend(user_id, movie_title, top_n=10):
     )
 
     hybrid["Hybrid Score"] = (
-        0.4 * hybrid["Content Score"] +
-        0.6 * hybrid["Collaborative Score"]
+        0.4 * hybrid["Content Score"]
+        + 0.6 * hybrid["Collaborative Score"]
     )
 
     hybrid = hybrid.sort_values(
@@ -221,10 +224,11 @@ def hybrid_recommend(user_id, movie_title, top_n=10):
 # Groq
 # -------------------------------
 
-
 client = Groq(
     api_key=st.secrets["GROQ_API_KEY"]
 )
+
+
 def explain(movie, rec, c, cf, h):
 
     prompt = f"""
@@ -246,14 +250,16 @@ def explain(movie, rec, c, cf, h):
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[{"role": "user", "content": prompt}]
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
     )
 
     return response.choices[0].message.content
 
-# -------------------------------
-# UI
-# -------------------------------
 
 # -------------------------------
 # Sidebar
@@ -262,9 +268,11 @@ def explain(movie, rec, c, cf, h):
 with st.sidebar:
 
     st.header("⚙ Recommendation Settings")
-    
-    movie = st.selectbox("🎬 Select a Movie",
-        options=sorted(final_movies["title"].unique()))
+
+    movie = st.selectbox(
+        "🎬 Select a Movie",
+        options=sorted(final_movies["title"].unique())
+    )
 
     user = st.number_input(
         "👤 User ID",
@@ -294,7 +302,11 @@ tab1, tab2, tab3 = st.tabs(
     ]
 )
 
-# Main Page
+
+# -------------------------------
+# Recommendation Page
+# -------------------------------
+
 with tab1:
 
     if recommend:
@@ -304,7 +316,6 @@ with tab1:
             st.stop()
 
         with st.spinner("🔍 Finding the best movies for you..."):
-
             result = hybrid_recommend(user, movie, top)
 
         if "Message" in result.columns:
@@ -348,11 +359,12 @@ with tab1:
                     st.success("### Why is this movie recommended?")
 
                     st.markdown("""
-                    ✅ **Matches your favourite genres and storyline**
+✅ **Matches your favourite genres and storyline**
 
-                    👥 **Users with similar preferences also watched and liked this movie**
+👥 **Users with similar preferences also watched and liked this movie**
 
-                    ⭐ **Highly ranked by the Hybrid Recommendation Model**""")
+⭐ **Highly ranked by the Hybrid Recommendation Model**
+                    """)
 
                     with st.expander("🤖 Why did AI recommend this movie?"):
 
@@ -367,31 +379,33 @@ with tab1:
                         st.write(explanation)
 
                     st.markdown("---")
+
 # -------------------------------
 # EDA Dashboard
 # -------------------------------
 
 with tab2:
 
-     st.title("📊 Exploratory Data Analysis")
+    st.title("📊 Exploratory Data Analysis")
 
     # -------------------------------------------------
-     st.subheader("1️⃣ Distribution of Movie Ratings")
+    st.subheader("1️⃣ Distribution of Movie Ratings")
 
-     st.image(
+    st.image(
         "images/DistributionofMovieRatings.png",
         caption="Distribution of Movie Ratings",
-        width="stretch")
+        width="stretch"
+    )
 
-     st.info("""
-     **Inference**
+    st.info("""
+**Inference**
 
-    • Most movies have ratings between **6 and 8**.
+• Most movies have ratings between **6 and 8**.
 
-    • Very few movies receive extremely low ratings.
+• Very few movies receive extremely low ratings.
 
-    • This indicates that the dataset mainly contains well-rated movies.
-    """)
+• This indicates that the dataset mainly contains well-rated movies.
+""")
 
     st.divider()
 
@@ -405,14 +419,14 @@ with tab2:
     )
 
     st.info("""
-    **Inference**
+**Inference**
 
-    • Drama and Comedy are the most common genres.
+• Drama and Comedy are the most common genres.
 
-    • Action and Adventure are also highly represented.
+• Action and Adventure are also highly represented.
 
-    • Genre information improves content-based recommendations.
-    """)
+• Genre information improves content-based recommendations.
+""")
 
     st.divider()
 
@@ -426,14 +440,14 @@ with tab2:
     )
 
     st.info("""
-    **Inference**
+**Inference**
 
-    • A few actors appear in many movies.
+• A few actors appear in many movies.
 
-    • Popular actors contribute to movie similarity.
+• Popular actors contribute to movie similarity.
 
-    • Frequent actor appearances improve recommendation quality.
-    """)
+• Frequent actor appearances improve recommendation quality.
+""")
 
     st.divider()
 
@@ -447,14 +461,14 @@ with tab2:
     )
 
     st.info("""
-    **Inference**
+**Inference**
 
-    • Movie production has increased steadily over the years.
+• Movie production has increased steadily over the years.
 
-    • Most movies in the dataset were released after 2000.
+• Most movies in the dataset were released after 2000.
 
-    • The dataset contains a strong representation of recent films.
-    """)
+• The dataset contains a strong representation of recent films.
+""")
 
     st.divider()
 
@@ -468,14 +482,14 @@ with tab2:
     )
 
     st.info("""
-    **Inference**
+**Inference**
 
-    • A few directors have contributed a large number of movies.
+• A few directors have contributed a large number of movies.
 
-    • Director information helps identify similar movies.
+• Director information helps identify similar movies.
 
-    • Well-known directors dominate the dataset.
-    """)
+• Well-known directors dominate the dataset.
+""")
 
     st.divider()
 
@@ -489,19 +503,24 @@ with tab2:
     )
 
     st.info("""
-    **Inference**
+**Inference**
 
-    • A small number of movies have very high popularity.
+• A small number of movies have very high popularity.
 
-    • Popular movies are more likely to be recommended.
+• Popular movies are more likely to be recommended.
 
-    • Popularity is an important feature in ranking recommendations.
-    """)
+• Popularity is an important feature in ranking recommendations.
+""")
+
+# -------------------------------
+# About Project
+# -------------------------------
+
 with tab3:
 
     st.title("🎬 About the Project")
 
-         st.markdown("""
+    st.markdown("""
 ## AI Movie Recommendation System
 
 This project recommends personalised movies using a Hybrid Recommendation System.
@@ -526,23 +545,26 @@ This project recommends personalised movies using a Hybrid Recommendation System
 - Groq API
 
 ---
-### Models Used
 
-### 🎯 Content-Based Filtering
+### 🧠 Models Used
 
-Uses **TF-IDF Vectorization** and **Cosine Similarity** to compare movie genres, keywords, cast, and descriptions. It recommends movies with similar content.
+#### 🎯 Content-Based Filtering
+
+Uses **TF-IDF Vectorization** and **Cosine Similarity** to compare movie genres,
+keywords, cast, and descriptions. It recommends movies with similar content.
 
 ---
 
-### 👥 Collaborative Filtering
+#### 👥 Collaborative Filtering
 
 Uses **Singular Value Decomposition (SVD)** from the Surprise library.
 
-SVD is a **model-based collaborative filtering algorithm** that learns user preferences from historical ratings and predicts ratings for unseen movies.
+SVD is a **model-based collaborative filtering algorithm** that learns user
+preferences from historical ratings and predicts ratings for unseen movies.
 
 ---
 
-### 🔀 Hybrid Recommendation
+#### 🔀 Hybrid Recommendation
 
 The final recommendation combines:
 
@@ -553,44 +575,45 @@ This improves recommendation accuracy and personalization.
 
 ---
 
-### 🤖 Explainable AI
+#### 🤖 Explainable AI
 
-Groq Llama 3.3 generates natural language explanations describing why each movie is recommended.
+Groq Llama 3.3 generates natural language explanations describing why each
+movie is recommended.
 """)
 
-### 📈 Model Evaluation
+    # -------------------------------
+    # Model Evaluation
+    # -------------------------------
 
-st.subheader("📈 Model Performance")
+    st.subheader("📈 Model Performance")
 
-metrics = pd.DataFrame({
+    metrics = pd.DataFrame({
+        "Model": [
+            "Content-Based",
+            "Collaborative (SVD)",
+            "Hybrid"
+        ],
+        "Evaluation": [
+            "Precision@10",
+            "RMSE / MAE",
+            "Precision@10 & Recall@10"
+        ],
+        "Result": [
+            "Your Precision",
+            "Your RMSE / MAE",
+            "Your Precision & Recall"
+        ]
+    })
 
-"Model":[
-"Content-Based",
-"Collaborative (SVD)",
-"Hybrid"
-],
+    st.table(metrics)
 
-"Evaluation":[
-"Precision@10",
-"RMSE / MAE",
-"Precision@10 & Recall@10"
-],
+    # -------------------------------
+    # Footer
+    # -------------------------------
 
-"Result":[
-"Your Precision",
-"Your RMSE / MAE",
-"Your Precision & Recall"
-]
+    st.markdown("---")
 
-})
-
-st.table(metrics)
-
-# ---------------- Footer ----------------
-
-st.markdown("---")
-
-st.markdown("""
+    st.markdown("""
 ### 👩‍💻 Developed by
 
 **Prerana Gowda**
@@ -609,6 +632,5 @@ AI & Machine Learning Enthusiast
 
 ✔ Hybrid Recommendation
 
-✔ Explainable AI (Groq)
+✔ Explainable AI
 """)
-
