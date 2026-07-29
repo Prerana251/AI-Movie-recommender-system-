@@ -345,40 +345,24 @@ with tab1:
 
             st.markdown("---")
 
-            st.header("🎬 Recommended Movies")
+st.header("🎬 Recommended Movies")
 
-            for _, row in result.iterrows():
+for i, (_, row) in enumerate(result.iterrows(), start=1):
 
-                with st.container():
+    st.subheader(f"{i}. {row['title']}")
 
-                    st.subheader(f"🎥 {row['title']}")
-                    st.caption("Recommended especially for you")
+    explanation = explain(
+        movie,
+        row["title"],
+        row["Content Score"],
+        row["Collaborative Score"],
+        row["Hybrid Score"]
+    )
 
-                    st.progress(float(row["Hybrid Score"]))
+    st.write("**Why recommended?**")
+    st.write(explanation)
 
-                    st.success("### Why is this movie recommended?")
-
-                    st.markdown("""
-✅ **Matches your favourite genres and storyline**
-
-👥 **Users with similar preferences also watched and liked this movie**
-
-⭐ **Highly ranked by the Hybrid Recommendation Model**
-                    """)
-
-                    with st.expander("🤖 Why did AI recommend this movie?"):
-
-                        explanation = explain(
-                            movie,
-                            row["title"],
-                            row["Content Score"],
-                            row["Collaborative Score"],
-                            row["Hybrid Score"]
-                        )
-
-                        st.write(explanation)
-
-                    st.markdown("---")
+    st.divider()      
 
 # -------------------------------
 # EDA Dashboard
