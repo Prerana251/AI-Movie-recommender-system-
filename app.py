@@ -455,7 +455,7 @@ with tab2:
     st.subheader("4️⃣ Movies Released Per Year")
 
     st.image(
-        "images/movie_released_peryear.png",
+        "images/movie_relased_peryear.png",
         caption="Movies Released Per Year",
         width="stretch"
     )
