@@ -595,6 +595,12 @@ metrics = pd.DataFrame({
 })
 
 st.table(metrics)
+
+# ---------------- Footer ----------------
+
+st.markdown("---")
+
+st.markdown("""
 ### 👩‍💻 Developed By
 
 **Prerana Gowda**
@@ -602,20 +608,10 @@ st.table(metrics)
 Business Analytics Student
 
 AI & Machine Learning Enthusiast
-""")
-# Footer
 
-st.markdown("---")
+---
 
-st.markdown(
-"""
-### 👩‍💻 Developed by
-
-**Prerana Gowda**
-
-st.markdown("""
-# 🎬 AI Movie Recommendation System
-""")
+### 🎬 AI Movie Recommendation System
 
 ✔ Content-Based Filtering
 
@@ -624,5 +620,6 @@ st.markdown("""
 ✔ Hybrid Recommendation
 
 ✔ Explainable AI (Groq)
-"""
-)
+""")
+
+
