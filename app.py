@@ -376,16 +376,15 @@ with tab2:
      st.title("📊 Exploratory Data Analysis")
 
     # -------------------------------------------------
-    st.subheader("1️⃣ Distribution of Movie Ratings")
+     st.subheader("1️⃣ Distribution of Movie Ratings")
 
-    st.image(
+     st.image(
         "images/DistributionofMovieRatings.png",
         caption="Distribution of Movie Ratings",
-        width="stretch"
-    )
+        width="stretch")
 
-    st.info("""
-    **Inference**
+     st.info("""
+     **Inference**
 
     • Most movies have ratings between **6 and 8**.
 
