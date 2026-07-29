@@ -371,9 +371,9 @@ with tab1:
 # EDA Dashboard
 # -------------------------------
 
-    with tab2:
+with tab2:
 
-    st.title("📊 Exploratory Data Analysis")
+     st.title("📊 Exploratory Data Analysis")
 
     # -------------------------------------------------
     st.subheader("1️⃣ Distribution of Movie Ratings")
