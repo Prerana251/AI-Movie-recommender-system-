@@ -225,27 +225,24 @@ def hybrid_recommend(user_id, movie_title, top_n=10):
 client = Groq(
     api_key=st.secrets["GROQ_API_KEY"]
 )
-
-
 def explain(movie, rec, c, cf, h):
 
-prompt = f"""
-The user selected the movie: {movie}
+    prompt = f"""
+    The user selected the movie: {movie}
 
-Recommended movie: {rec}
+    Recommended movie: {rec}
 
-Explain why this recommendation is suitable.
+    Explain why this recommendation is suitable.
 
-Mention:
+    Mention:
+    - Similar genres
+    - Similar storyline
+    - Similar audience preferences
 
-- Similar genres
-- Similar storyline
-- Similar audience preferences
+    Do NOT mention Content Score, Collaborative Score or Hybrid Score.
 
-Do NOT mention Content Score, Collaborative Score or Hybrid Score.
-
-Write in simple English using 3–4 sentences.
-"""
+    Write in simple English using 3–4 sentences.
+    """
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
@@ -374,10 +371,6 @@ with tab1:
 # EDA Dashboard
 # -------------------------------
 
-with tab2:
-
-    st.title("📊 Exploratory Data Analysis")
-
     with tab2:
 
     st.title("📊 Exploratory Data Analysis")
@@ -505,15 +498,35 @@ with tab2:
 
     • Popularity is an important feature in ranking recommendations.
     """)
-        with tab3:
+with tab3:
 
-         st.title("🎬 About the Project")
+    st.title("🎬 About the Project")
 
          st.markdown("""
 ## AI Movie Recommendation System
 
 This project recommends personalised movies using a Hybrid Recommendation System.
 
+### 📂 Dataset
+
+- Movie Metadata
+- User Ratings
+- Movie Genres
+- Movie Overview
+- Popularity & Ratings
+
+---
+
+### ⚙️ Technologies Used
+
+- Python
+- Streamlit
+- Scikit-learn
+- Surprise (SVD)
+- Pandas
+- Groq API
+
+---
 ### Models Used
 
 ### 🎯 Content-Based Filtering
@@ -545,28 +558,6 @@ This improves recommendation accuracy and personalization.
 
 Groq Llama 3.3 generates natural language explanations describing why each movie is recommended.
 """)
-
-### 📂 Dataset
-
-- Movie Metadata
-- User Ratings
-- Movie Genres
-- Movie Overview
-- Popularity & Ratings
-
----
-
-### ⚙️ Technologies Used
-
-- Python
-- Streamlit
-- Scikit-learn
-- Surprise (SVD)
-- Pandas
-- Groq API
-- Pickle
-
----
 
 ### 📈 Model Evaluation
 
@@ -601,7 +592,7 @@ st.table(metrics)
 st.markdown("---")
 
 st.markdown("""
-### 👩‍💻 Developed By
+### 👩‍💻 Developed by
 
 **Prerana Gowda**
 
@@ -621,5 +612,4 @@ AI & Machine Learning Enthusiast
 
 ✔ Explainable AI (Groq)
 """)
-
 
