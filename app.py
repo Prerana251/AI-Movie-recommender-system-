@@ -573,18 +573,15 @@ movie is recommended.
 
     metrics = pd.DataFrame({
         "Model": [
-            "Content-Based",
             "Collaborative (SVD)",
             "Hybrid"
         ],
         "Evaluation": [
-            "Precision@10",
             "RMSE / MAE",
             "Precision@10 & Recall@10"
         ],
         "Result": [
-            "1.0",
-            "PMSE: 0.88 | MAE:0.63",
+            "RMSE: 0.88 | MAE:0.63",
             "Precision:1.0 | Recall:0.0004"
         ]
     })
