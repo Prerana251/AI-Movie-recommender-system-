@@ -232,29 +232,36 @@ client = Groq(
 def explain(movie, rec, c, cf, h):
 
     prompt = f"""
-    The user selected the movie: {movie}
+    The user selected the movie "{movie}".
 
-    Recommended movie: {rec}
+    The recommended movie is "{rec}".
 
-    Explain why this recommendation is suitable.
+    Give ONLY ONE short sentence (maximum 15 words).
 
-    Mention:
-    - Similar genres
-    - Similar storyline
-    - Similar audience preferences
+    Start the sentence with:
+    "Recommended because..."
 
-    Do NOT mention Content Score, Collaborative Score or Hybrid Score.
+    Mention only:
+    - similar genres
+    - similar themes or storyline
+    - similar audience preferences
 
-    Write in simple English using 3–4 sentences.
+    Do not mention:
+    - movie names
+    - AI
+    - Content Score
+    - Collaborative Score
+    - Hybrid Score
+    - ratings
+
+    Example:
+    Recommended because it shares similar genres, themes, and audience preferences with your selected movie.
     """
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
+            {"role": "user", "content": prompt}
         ]
     )
 
