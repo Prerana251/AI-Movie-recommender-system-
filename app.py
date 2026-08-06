@@ -350,7 +350,7 @@ with tab1:
 
         else:
 
-    st.success("Recommendations generated successfully!")
+            st.success("Recommendations generated successfully!")
 
     if new_user:
 
