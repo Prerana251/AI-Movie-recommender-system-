@@ -338,11 +338,11 @@ with tab1:
             st.stop()
 
         with st.spinner("🔍 Finding the best movies for you..."):
-                if new_user:
-                    result = recommend_new_user(top)
+            if new_user:
+                result = recommend_new_user(top)
 
-                 else:
-                     result = hybrid_recommend(user,movie,top)
+            else:
+                result = hybrid_recommend(user,movie,top)
 
         if "Message" in result.columns:
 
