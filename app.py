@@ -181,7 +181,20 @@ def svd_recommend(user_id, top_n=None):
             "Collaborative Score"
         ]
     ]
+def recommend_new_user(top_n=10):
 
+    popular_movies = final_movies.sort_values(
+        by=["vote_average", "popularity"],
+        ascending=False
+    )
+
+    return popular_movies[
+        [
+            "title",
+            "vote_average",
+            "popularity"
+        ]
+    ].head(top_n)
 
 def hybrid_recommend(user_id, movie_title, top_n=10):
 
@@ -286,7 +299,9 @@ with st.sidebar:
         min_value=1,
         value=1
     )
-
+    new_user = st.checkbox(
+    "🆕 New User (No Rating History)")
+    
     top = st.slider(
         "🎯 Number of Recommendations",
         5,
@@ -323,7 +338,11 @@ with tab1:
             st.stop()
 
         with st.spinner("🔍 Finding the best movies for you..."):
-            result = hybrid_recommend(user, movie, top)
+                if new_user:
+                    result = recommend_new_user(top)
+
+                 else:
+                     result = hybrid_recommend(user,movie,top)
 
         if "Message" in result.columns:
 
@@ -331,46 +350,54 @@ with tab1:
 
         else:
 
-            st.success("Recommendations generated successfully!")
+    st.success("Recommendations generated successfully!")
 
-            col1, col2, col3 = st.columns(3)
+    if new_user:
 
-            col1.metric(
-                "Movies Found",
-                len(result)
+        st.subheader("🌟 Popular Movies for New Users")
+
+        st.dataframe(result)
+
+    else:
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric(
+            "Movies Found",
+            len(result)
+        )
+
+        col2.metric(
+            "Average Score",
+            round(result["Hybrid Score"].mean(), 2)
+        )
+
+        col3.metric(
+            "Best Match",
+            result.iloc[0]["title"]
+        )
+
+        st.markdown("---")
+
+        st.header("🎬 Recommended Movies")
+
+        for i, (_, row) in enumerate(result.iterrows(), start=1):
+
+            st.subheader(f"{i}. {row['title']}")
+
+            explanation = explain(
+                movie,
+                row["title"],
+                row["Content Score"],
+                row["Collaborative Score"],
+                row["Hybrid Score"]
             )
 
-            col2.metric(
-                "Average Score",
-                round(result["Hybrid Score"].mean(), 2)
-            )
+            st.write("**Why recommended?**")
 
-            col3.metric(
-                "Best Match",
-                result.iloc[0]["title"]
-            )
+            st.write(explanation)
 
-            st.markdown("---")
-
-            st.header("🎬 Recommended Movies")
-
-            for i, (_, row) in enumerate(result.iterrows(), start=1):
-
-                st.subheader(f"{i}. {row['title']}")
-
-                explanation = explain(
-                    movie,
-                    row["title"],
-                    row["Content Score"],
-                    row["Collaborative Score"],
-                    row["Hybrid Score"]
-                )
-
-                st.write("**Why recommended?**")
-                st.write(explanation)
-
-                st.divider()      
-
+            st.divider()
 # -------------------------------
 # EDA Dashboard
 # -------------------------------
