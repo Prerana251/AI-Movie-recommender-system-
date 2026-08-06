@@ -588,7 +588,7 @@ movie is recommended.
             "Precision@10 & Recall@10"
         ],
         "Result": [
-            "RMSE: 0.88 | MAE:0.63",
+            "RMSE: 0.88 | MAE:0.68",
             "Precision:1.0 | Recall:0.0004"
         ]
     })
