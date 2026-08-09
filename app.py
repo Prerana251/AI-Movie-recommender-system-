@@ -987,11 +987,7 @@ st.markdown("---")
 st.markdown("""
 ### 👩‍💻 Developed by
 
-**Prerana Gowda**
-
-Business Analytics Student
-
-AI & Machine Learning Enthusiast
+**Prerana C **
 
 ---
 
