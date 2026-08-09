@@ -660,7 +660,7 @@ def show_image(
     st.image(
         image_path,
         caption=caption,
-        width="stretch"
+        width="600"
     )
 
 
@@ -685,7 +685,7 @@ with tab2:
     st.image(
         "images/DistributionofMovieRatings.png",
         caption="Distribution of Movie Ratings",
-        width="stretch"
+        width="600"
     )
 
     st.info("""
@@ -711,7 +711,7 @@ with tab2:
     st.image(
         "images/top_genres.png",
         caption="Top Genres",
-        width="stretch"
+        width="600"
     )
 
     st.info("""
@@ -737,7 +737,7 @@ with tab2:
     st.image(
         "images/top_actor.png",
         caption="Top Actors",
-        width="stretch"
+        width="600"
     )
 
     st.info("""
@@ -789,7 +789,7 @@ with tab2:
     st.image(
         "images/top_directors.png",
         caption="Top Directors",
-        width="stretch"
+        width="600"
     )
 
     st.info("""
