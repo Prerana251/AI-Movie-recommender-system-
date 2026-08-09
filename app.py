@@ -657,11 +657,16 @@ def show_image(
 
         return
 
-    st.image(
-        image_path,
-        caption=caption,
-        width="600"
-    )
+    # Center the image
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+
+        st.image(
+            image_path,
+            caption=caption,
+            width=600
+        )
 
 
 with tab2:
@@ -674,6 +679,7 @@ with tab2:
         "### Dataset Insights"
     )
 
+
     # =====================================================
     # 1. RATINGS
     # =====================================================
@@ -682,23 +688,28 @@ with tab2:
         "1️⃣ Distribution of Movie Ratings"
     )
 
-    st.image(
-        "images/DistributionofMovieRatings.png",
-        caption="Distribution of Movie Ratings",
-        width="600"
-    )
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+
+        st.image(
+            "images/DistributionofMovieRatings.png",
+            caption="Distribution of Movie Ratings",
+            width=600
+        )
 
     st.info("""
-**Inference**
+    **Inference**
 
-• Most movie ratings are concentrated around the middle-to-high range.
+    • Most movie ratings are concentrated around the middle-to-high range.
 
-• Very low and extremely high ratings occur less frequently.
+    • Very low and extremely high ratings occur less frequently.
 
-• This indicates that the dataset contains a large proportion of moderately to highly rated movies.
-""")
+    • This indicates that the dataset contains a large proportion of moderately to highly rated movies.
+    """)
 
     st.divider()
+
 
     # =====================================================
     # 2. GENRES
@@ -708,23 +719,28 @@ with tab2:
         "2️⃣ Top Genres"
     )
 
-    st.image(
-        "images/top_genres.png",
-        caption="Top Genres",
-        width="600"
-    )
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+
+        st.image(
+            "images/top_genres.png",
+            caption="Top Genres",
+            width=600
+        )
 
     st.info("""
-**Inference**
+    **Inference**
 
-• The dataset contains a strong representation of popular movie genres.
+    • The dataset contains a strong representation of popular movie genres.
 
-• Drama, Comedy, Action and Adventure are among the commonly represented genres.
+    • Drama, Comedy, Action and Adventure are among the commonly represented genres.
 
-• Genre information is useful for content-based movie similarity.
-""")
+    • Genre information is useful for content-based movie similarity.
+    """)
 
     st.divider()
+
 
     # =====================================================
     # 3. ACTORS
@@ -734,23 +750,28 @@ with tab2:
         "3️⃣ Top Actors"
     )
 
-    st.image(
-        "images/top_actor.png",
-        caption="Top Actors",
-        width="600"
-    )
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+
+        st.image(
+            "images/top_actor.png",
+            caption="Top Actors",
+            width=600
+        )
 
     st.info("""
-**Inference**
+    **Inference**
 
-• Some actors appear more frequently than others in the dataset.
+    • Some actors appear more frequently than others in the dataset.
 
-• Actor information can help identify movies with similar cast characteristics.
+    • Actor information can help identify movies with similar cast characteristics.
 
-• Cast-related features can therefore contribute to content-based recommendations.
-""")
+    • Cast-related features can therefore contribute to content-based recommendations.
+    """)
 
     st.divider()
+
 
     # =====================================================
     # 4. MOVIES PER YEAR
@@ -767,16 +788,17 @@ with tab2:
     )
 
     st.info("""
-**Inference**
+    **Inference**
 
-• The number of movies varies across different release years.
+    • The number of movies varies across different release years.
 
-• The dataset contains substantial representation from modern movie releases.
+    • The dataset contains substantial representation from modern movie releases.
 
-• Release-year information can help understand the time distribution of the movie catalogue.
-""")
+    • Release-year information can help understand the time distribution of the movie catalogue.
+    """)
 
     st.divider()
+
 
     # =====================================================
     # 5. DIRECTORS
@@ -786,23 +808,28 @@ with tab2:
         "5️⃣ Top Directors"
     )
 
-    st.image(
-        "images/top_directors.png",
-        caption="Top Directors",
-        width="600"
-    )
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+
+        st.image(
+            "images/top_directors.png",
+            caption="Top Directors",
+            width=600
+        )
 
     st.info("""
-**Inference**
+    **Inference**
 
-• A small group of directors appears more frequently in the dataset.
+    • A small group of directors appears more frequently in the dataset.
 
-• Director information can help identify movies with similar creative characteristics.
+    • Director information can help identify movies with similar creative characteristics.
 
-• This feature can contribute to content-based recommendation.
-""")
+    • This feature can contribute to content-based recommendation.
+    """)
 
     st.divider()
+
 
     # =====================================================
     # 6. POPULAR MOVIES
@@ -812,21 +839,25 @@ with tab2:
         "6️⃣ Top Most Popular Movies"
     )
 
-    st.image(
-        "images/top_most_popular_movie.png",
-        caption="Top Most Popular Movies",
-        width="stretch"
-    )
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+
+        st.image(
+            "images/top_most_popular_movie.png",
+            caption="Top Most Popular Movies",
+            width=600
+        )
 
     st.info("""
-**Inference**
+    **Inference**
 
-• A relatively small group of movies has substantially higher popularity.
+    • A relatively small group of movies has substantially higher popularity.
 
-• Popularity can be useful as an additional signal when analysing movie demand.
+    • Popularity can be useful as an additional signal when analysing movie demand.
 
-• However, the recommendation system primarily relies on user preferences and movie similarity.
-""")
+    • However, the recommendation system primarily relies on user preferences and movie similarity.
+    """)
 
 
 # =========================================================
