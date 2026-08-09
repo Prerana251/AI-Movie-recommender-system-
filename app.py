@@ -782,7 +782,6 @@ with tab2:
     )
 
     show_image(
-        "images/movie_released_peryear.png",
         "images/movie_relased_peryear.png",
         "Movies Released Per Year"
     )
