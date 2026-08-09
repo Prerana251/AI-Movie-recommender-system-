@@ -279,7 +279,7 @@ def recommend_with_cold_start(user_id, movie_title, top_n=10):
 
 
 # -------------------------------
-# Groq
+# Groq Explainable AI
 # -------------------------------
 
 client = Groq(
@@ -289,43 +289,83 @@ client = Groq(
 
 def explain(movie, rec):
 
+    # Get selected movie tags
+    selected_row = final_movies[
+        final_movies["title"].str.lower() == movie.lower()
+    ]
+
+    # Get recommended movie tags
+    recommended_row = final_movies[
+        final_movies["title"].str.lower() == rec.lower()
+    ]
+
+    if selected_row.empty or recommended_row.empty:
+        return "Recommended because it matches your movie preferences."
+
+    selected_tags = str(
+        selected_row.iloc[0]["tags"]
+    )
+
+    recommended_tags = str(
+        recommended_row.iloc[0]["tags"]
+    )
+
     prompt = f"""
-    The user selected the movie "{movie}".
+The user selected the movie "{movie}".
 
-    The recommended movie is "{rec}".
+Selected movie characteristics:
+{selected_tags}
 
-    Give ONLY ONE short sentence (maximum 15 words).
+Recommended movie:
+{rec}
 
-    Start the sentence with:
-    "Recommended because..."
+Recommended movie characteristics:
+{recommended_tags}
 
-    Mention only:
-    - similar genres
-    - similar themes or storyline
-    - similar audience preferences
+Give ONLY ONE short sentence, maximum 20 words.
 
-    Do not mention:
-    - movie names
-    - AI
-    - Content Score
-    - Collaborative Score
-    - Hybrid Score
-    - ratings
-    -recommendation algorithms
+Start exactly with:
+"Recommended because..."
 
-    Example:
-    Recommended because it shares similar genres, themes, and audience preferences with your selected movie.
-    """
+Use ONLY the information provided above.
+
+Mention the most relevant similarity such as:
+- similar genres
+- similar themes
+- similar storyline
+- similar audience preferences
+
+Do NOT mention:
+- movie names
+- AI
+- Content Score
+- Collaborative Score
+- Hybrid Score
+- ratings
+- popularity
+- recommendation algorithms
+- scores
+- numbers
+
+Do not invent information.
+
+Example:
+"Recommended because it shares similar genres, themes, and audience preferences with your selected movie."
+"""
 
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
-            {"role": "user", "content": prompt}
-        ]
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.2,
+        max_tokens=50
     )
 
-    return response.choices[0].message.content
-
+    return response.choices[0].message.content.strip()
 
 # -------------------------------
 # Sidebar
