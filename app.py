@@ -289,12 +289,10 @@ client = Groq(
 
 def explain(movie, rec):
 
-    # Get selected movie tags
     selected_row = final_movies[
         final_movies["title"].str.lower() == movie.lower()
     ]
 
-    # Get recommended movie tags
     recommended_row = final_movies[
         final_movies["title"].str.lower() == rec.lower()
     ]
@@ -311,7 +309,7 @@ def explain(movie, rec):
     )
 
     prompt = f"""
-The user selected the movie "{movie}".
+The user selected "{movie}".
 
 Selected movie characteristics:
 {selected_tags}
@@ -324,33 +322,28 @@ Recommended movie characteristics:
 
 Give ONLY ONE short sentence, maximum 20 words.
 
-Start exactly with:
+Start with:
 "Recommended because..."
 
-Use ONLY the information provided above.
+The sentence should combine:
+- similarity to the user's selected movie
+- similar genres or themes
+- audience preference when supported
 
-Mention the most relevant similarity such as:
-- similar genres
-- similar themes
-- similar storyline
-- similar audience preferences
-
-Do NOT mention:
+Do not mention:
 - movie names
-- AI
 - Content Score
 - Collaborative Score
 - Hybrid Score
-- ratings
-- popularity
-- recommendation algorithms
+- AI
+- algorithms
 - scores
 - numbers
 
 Do not invent information.
 
 Example:
-"Recommended because it shares similar genres, themes, and audience preferences with your selected movie."
+"Recommended because it shares similar genres and themes with your selected movie and matches your preferences."
 """
 
     response = client.chat.completions.create(
