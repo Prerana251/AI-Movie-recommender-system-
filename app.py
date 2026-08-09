@@ -221,6 +221,64 @@ def hybrid_recommend(user_id, movie_title, top_n=10):
     return hybrid.head(top_n)
 
 # -------------------------------
+# Cold Start Handling
+# -------------------------------
+
+def is_new_user(user_id):
+    """
+    Check whether the user has any historical ratings.
+    """
+    return user_id not in ratings_df["userId"].unique()
+
+
+def cold_start_recommend(movie_title, top_n=10):
+    """
+    Recommendation strategy for a completely new user.
+
+    Since a new user has no rating history, SVD cannot
+    personalize recommendations. We therefore use
+    content-based filtering based on the movie selected
+    by the user.
+    """
+
+    recommendations = content_recommend(
+        movie_title,
+        top_n=100
+    )
+
+    if "Message" in recommendations.columns:
+        return recommendations
+
+    recommendations["Recommendation Type"] = (
+        "New User - Based on your selected movie"
+    )
+
+    return recommendations.head(top_n)
+
+
+def recommend_with_cold_start(user_id, movie_title, top_n=10):
+    """
+    Route new users to cold-start recommendations
+    and existing users to the hybrid recommender.
+    """
+
+    if is_new_user(user_id):
+
+        return cold_start_recommend(
+            movie_title,
+            top_n
+        )
+
+    else:
+
+        return hybrid_recommend(
+            user_id,
+            movie_title,
+            top_n
+        )
+
+
+# -------------------------------
 # Groq
 # -------------------------------
 
@@ -229,7 +287,7 @@ client = Groq(
 )
 
 
-def explain(movie, rec, c, cf, h):
+def explain(movie, rec):
 
     prompt = f"""
     The user selected the movie "{movie}".
@@ -253,6 +311,7 @@ def explain(movie, rec, c, cf, h):
     - Collaborative Score
     - Hybrid Score
     - ratings
+    -recommendation algorithms
 
     Example:
     Recommended because it shares similar genres, themes, and audience preferences with your selected movie.
@@ -323,7 +382,20 @@ with tab1:
             st.stop()
 
         with st.spinner("🔍 Finding the best movies for you..."):
-            result = hybrid_recommend(user, movie, top)
+            result = recommend_with_cold_start(user_id=user, movie_title=movie, top_n=top)
+
+            if is_new_user(user):
+               st.info(
+                  "🆕 New user detected. "
+                  "Since you don't have previous rating history, "
+                  "recommendations are based on the movie you selected."
+               )
+
+             else:
+                 st.success(
+                    "👤 Existing user detected. "
+                    "Recommendations are personalized using your "
+                    "rating history and movie preferences.")
 
         if "Message" in result.columns:
 
@@ -336,17 +408,15 @@ with tab1:
             col1, col2, col3 = st.columns(3)
 
             col1.metric(
-                "Movies Found",
+                "Movies Recommended",
                 len(result)
             )
 
             col2.metric(
-                "Average Score",
-                round(result["Hybrid Score"].mean(), 2)
-            )
+                "Selected Movie",movie)
 
             col3.metric(
-                "Best Match",
+                "Top Recommendation",
                 result.iloc[0]["title"]
             )
 
@@ -356,18 +426,52 @@ with tab1:
 
             for i, (_, row) in enumerate(result.iterrows(), start=1):
 
-                st.subheader(f"{i}. {row['title']}")
+                for i, (_, row) in enumerate(
+                      result.iterrows(),start=1):
 
-                explanation = explain(
-                    movie,
-                    row["title"],
-                    row["Content Score"],
-                    row["Collaborative Score"],
-                    row["Hybrid Score"]
-                )
+    st.subheader(
+        f"{i}. 🎬 {row['title']}"
+    )
 
-                st.write("**Why recommended?**")
-                st.write(explanation)
+    if is_new_user(user):
+
+        st.info(
+            "🎯 Recommended because it is similar "
+            "to the movie you selected."
+        )
+
+        st.caption(
+            "This recommendation is based on your "
+            "initial movie preference."
+        )
+
+    else:
+
+        st.info(
+            "👥 Recommended based on your previous "
+            "rating preferences and similar movie content."
+        )
+
+        st.caption(
+            "The hybrid model combines your learned "
+            "preferences with movie similarity."
+        )
+
+    with st.expander(
+        "🤖 Why was this movie recommended?"
+    ):
+
+        explanation = explain(
+            movie,
+            row["title"],
+            0,
+            0,
+            0
+        )
+
+        st.write(explanation)
+
+    st.divider()
 
                 st.divider()      
 
